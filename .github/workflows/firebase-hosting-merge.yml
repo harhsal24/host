@@ -2,19 +2,36 @@
 # https://github.com/firebase/firebase-tools
 
 name: Deploy to Firebase Hosting on merge
-'on':
+
+# Trigger the workflow only when there's a push event to the main branch
+on:
   push:
     branches:
       - main
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+
     steps:
+      # Checkout the repository code
       - uses: actions/checkout@v3
+
+      # Install dependencies and build the project
       - run: npm ci && npm run build
+
+      # Deploy to Firebase Hosting
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
+          # Pass the GitHub token to the action
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          
+          # Pass the Firebase service account credentials to the action
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_FRONTED_A806A }}'
+          
+          # Specify the Firebase Hosting channel to deploy to
           channelId: live
+          
+          # Specify the Firebase project ID
           projectId: fronted-a806a
+
